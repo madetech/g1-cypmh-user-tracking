@@ -169,7 +169,7 @@ if(onlyDocumentation == 'true') {
 }
 
 // Connect to atlas database
-const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.fb9mz.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.${process.env.ATLAS_PROJECT_CODE}.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {useNewUrlParser: true});
 client.connect();
 
