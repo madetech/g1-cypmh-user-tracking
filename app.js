@@ -120,7 +120,7 @@ function checkFiles () {
   const envExists = fs.existsSync(path.join(__dirname, '/.env'))
   if (!envExists) {
     fs.createReadStream(path.join(__dirname, '/lib/template.env'))
-      .pipe(fs.createWriteStream(path.join(__dirname, '/.env')))
+        .pipe(fs.createWriteStream(path.join(__dirname, '/.env')))
   }
 }
 
@@ -136,7 +136,7 @@ if (!sessionDataDefaultsFileExists) {
   }
 
   fs.createReadStream(path.join(__dirname, '/lib/template.session-data-defaults.js'))
-    .pipe(fs.createWriteStream(sessionDataDefaultsFile))
+      .pipe(fs.createWriteStream(sessionDataDefaultsFile))
 }
 
 // Check if the app is documentation only
@@ -166,27 +166,46 @@ if(onlyDocumentation == 'true') {
   });
 }
 
-const databaseConnect = () => {
-  var MongoClient = require('mongodb').MongoClient;
-  console.log('################################')
 
-  // Connect to the db
-  MongoClient.connect("mongodb://localhost:27017/MyDb", function (err, db) {
-      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-      if(err) throw err;
-      
+const MongoClient = require('mongodb').MongoClient;
+const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.fb9mz.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {useNewUrlParser: true});
 
-      //Write databse Insert/Update/Query code here..
-                
-  });
+// perform actions on the collection object
+async function run() {
+  try {
+    await client.connect();
+    const database = client.db('sample_mflix');
+    const collection = database.collection('movies');
+    // Query for a movie that has the title 'Back to the Future'
+    const query = { title: 'Back to the Future' };
+    const movie = await collection.findOne(query);
+    console.log(movie);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
 }
 
+async function post(data) {
+  try {
+    await client.connect();
+    const database = client.db('alpha-v1');
+    const collection = database.collection('tracking_data');
+    // Query for a movie that has the title 'Back to the Future'
+    const result = await collection.insertOne(JSON.parse(data));
+    console.log(result.insertedCount);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
 
 app.post('/tracking',(req, res)=>{
   console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   console.log(req.body);
-  databaseConnect();
-
+  //run().catch(console.dir);
+  post(req.body).catch(console.dir);
   res.send();
 })
 
