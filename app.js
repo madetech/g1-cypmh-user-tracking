@@ -169,7 +169,7 @@ if(onlyDocumentation == 'true') {
 }
 
 // Connect to atlas database
-const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.${process.env.ATLAS_PROJECT_CODE}.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.${process.env.ATLAS_PROJECT_CODE}.mongodb.net?retryWrites=true&w=majority`;
 // const client = new MongoClient(uri, {useNewUrlParser: true}).connect();
 // client.connect();
 let mongoClient = MongoClient.connect(uri)
@@ -185,7 +185,6 @@ async function post(data) {
   try {
     mongoClient.then((client) => {
       const database = client.db('alpha-v1');
-      console.log(database)
       const collection = database.collection('tracking_data');
       collection.insertOne(JSON.parse(data)).catch(error => {
         console.log("insert error", error)
