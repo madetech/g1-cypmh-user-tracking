@@ -9,6 +9,8 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 const sessionInCookie = require('client-sessions')
 const sessionInMemory = require('express-session')
+const exitHook = require('async-exit-hook');
+const MongoClient = require('mongodb').MongoClient;
 
 // Run before other code to make sure variables from .env are available
 dotenv.config()
@@ -166,12 +168,19 @@ if(onlyDocumentation == 'true') {
   });
 }
 
-
-const MongoClient = require('mongodb').MongoClient;
+// Connect to atlas database
 const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.fb9mz.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {useNewUrlParser: true});
 client.connect();
 
+// Disconnect from database on exit
+exitHook(() => {
+  console.log('\nClosing database connections');
+  client.close();
+  console.log("Database disconnected")
+});
+
+// Post to atlas database
 async function post(data) {
   try {
     const database = client.db('alpha-v1');
@@ -182,19 +191,11 @@ async function post(data) {
   } catch (error) {
     // Ensures that the client will close when you finish/error
     console.log(error)
-
   }
 }
 
-process.on('SIGTERM', () => {
-  client.close();
-  console.log("Byeeeeeeee")
-});
-
 app.post('/tracking',(req, res)=>{
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   console.log(req.body);
-  //run().catch(console.dir);
   post(req.body).catch(console.dir);
   res.send();
 })
