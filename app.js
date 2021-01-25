@@ -91,6 +91,7 @@ if (useCookieSessionStore === 'true' && !onlyDocumentation) {
 
 // Support for parsing data in POSTs
 app.use(bodyParser.json());
+app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({
   extended: true
 }))
@@ -165,8 +166,27 @@ if(onlyDocumentation == 'true') {
   });
 }
 
+const databaseConnect = () => {
+  var MongoClient = require('mongodb').MongoClient;
+  console.log('################################')
+
+  // Connect to the db
+  MongoClient.connect("mongodb://localhost:27017/MyDb", function (err, db) {
+      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+      if(err) throw err;
+      
+
+      //Write databse Insert/Update/Query code here..
+                
+  });
+}
+
+
 app.post('/tracking',(req, res)=>{
+  console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
   console.log(req.body);
+  databaseConnect();
+
   res.send();
 })
 
