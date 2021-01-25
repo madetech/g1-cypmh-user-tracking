@@ -173,12 +173,12 @@ const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PAS
 const client = new MongoClient(uri, {useNewUrlParser: true});
 client.connect();
 
-// Disconnect from database on exit
-exitHook(() => {
-  console.log('\nClosing database connections');
-  client.close();
-  console.log("Database disconnected")
-});
+// // Disconnect from database on exit
+// exitHook(() => {
+//   console.log('\nClosing database connections');
+//   client.close();
+//   console.log("Database disconnected")
+// });
 
 // Post to atlas database
 async function post(data) {
