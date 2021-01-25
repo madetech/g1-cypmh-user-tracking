@@ -170,9 +170,9 @@ if(onlyDocumentation == 'true') {
 
 // Connect to atlas database
 const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.${process.env.ATLAS_PROJECT_CODE}.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, {useNewUrlParser: true});
-client.connect();
-
+// const client = new MongoClient(uri, {useNewUrlParser: true}).connect();
+// client.connect();
+let mongoClient = MongoClient.connect(uri)
 // // Disconnect from database on exit
 // exitHook(() => {
 //   console.log('\nClosing database connections');
@@ -183,16 +183,24 @@ client.connect();
 // Post to atlas database
 async function post(data) {
   try {
-    const database = client.db('alpha-v1');
-    const collection = database.collection('tracking_data');
-    // Query for a movie that has the title 'Back to the Future'
-    const result = await collection.insertOne(JSON.parse(data));
-    console.log(result.insertedCount);
+    mongoClient.then((client) => {
+      const database = client.db('alpha-v1');
+      console.log(database)
+      const collection = database.collection('tracking_data');
+      collection.insertOne(JSON.parse(data)).catch(error => {
+        console.log("insert error", error)
+      });
+  //     
+    }).catch(err => {
+
+      console.log("connection error",err)
+    })
+    
   } catch (error) {
     // Ensures that the client will close when you finish/error
-    console.log(error)
+    console.log("mongo client", error)
   }
-}
+};
 
 app.post('/tracking',(req, res)=>{
   console.log(req.body);
