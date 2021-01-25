@@ -170,36 +170,26 @@ if(onlyDocumentation == 'true') {
 const MongoClient = require('mongodb').MongoClient;
 const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PASSWORD}@cluster0.fb9mz.mongodb.net/${process.env.ATLAS_DBNAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {useNewUrlParser: true});
-
-// perform actions on the collection object
-async function run() {
-  try {
-    await client.connect();
-    const database = client.db('sample_mflix');
-    const collection = database.collection('movies');
-    // Query for a movie that has the title 'Back to the Future'
-    const query = { title: 'Back to the Future' };
-    const movie = await collection.findOne(query);
-    console.log(movie);
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
+client.connect();
 
 async function post(data) {
   try {
-    await client.connect();
     const database = client.db('alpha-v1');
     const collection = database.collection('tracking_data');
     // Query for a movie that has the title 'Back to the Future'
     const result = await collection.insertOne(JSON.parse(data));
     console.log(result.insertedCount);
-  } finally {
+  } catch (error) {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    console.log(error)
+
   }
 }
+
+process.on('SIGTERM', () => {
+  client.close();
+  console.log("Byeeeeeeee")
+});
 
 app.post('/tracking',(req, res)=>{
   console.log('xxxxxxxxxxxxxxxxxxxxxxxx');
