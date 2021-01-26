@@ -181,12 +181,12 @@ exitHook(() => {
 });
 
 // Post to atlas database
-async function post(data) {
+async function writeToDatabase(trackingEvent) {
   try {
     mongoClient.then((client) => {
       const database = client.db('alpha-v1');
-      const collection = database.collection('tracking_data');
-      collection.insertOne(JSON.parse(data)).catch(error => {
+      const collection = database.collection(trackingEvent.type);
+      collection.insertOne(JSON.parse(trackingEvent)).catch(error => {
         console.log("insert error", error)
       });
     }).catch(err => {
@@ -202,9 +202,8 @@ async function post(data) {
 
 app.post('/tracking',(req, res)=>{
   console.log(req.body);
-  const dataObject = dataObjectFactory("click")
-  dataObject.build(data)
-  post(req.body).catch(console.dir);
+  const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
+  writeToDatabase(trackingEvent).catch(console.dir);
   res.send();
 })
 

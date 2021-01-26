@@ -1,8 +1,12 @@
 
-function dataObjectFactory(objectType) {
-  switch (objectType){
+function buildTrackingEvent(reqBody) {
+  switch (reqBody.type){
     case "click":
-      return (new clickObjectBuilder)
+      return (new clickObjectBuilder);
+    case "load":
+      return (new loadObjectBuilder);
+    case "unload":
+      return (new unloadObjectBuilder);
     default:
       throw new Error('unhandled event type')
   }
