@@ -173,12 +173,12 @@ const uri = `mongodb+srv://${process.env.ATLAS_USERNAME}:${process.env.ATLAS_PAS
 // const client = new MongoClient(uri, {useNewUrlParser: true}).connect();
 // client.connect();
 let mongoClient = MongoClient.connect(uri)
-// // Disconnect from database on exit
-// exitHook(() => {
-//   console.log('\nClosing database connections');
-//   client.close();
-//   console.log("Database disconnected")
-// });
+// Disconnect from database on exit
+exitHook(() => {
+  console.log('\nClosing database connections');
+  mongoClient.close();
+  console.log("Database disconnected")
+});
 
 // Post to atlas database
 async function post(data) {
@@ -189,7 +189,6 @@ async function post(data) {
       collection.insertOne(JSON.parse(data)).catch(error => {
         console.log("insert error", error)
       });
-  //     
     }).catch(err => {
 
       console.log("connection error",err)
