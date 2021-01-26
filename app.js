@@ -202,6 +202,8 @@ async function post(data) {
 
 app.post('/tracking',(req, res)=>{
   console.log(req.body);
+  const dataObject = dataObjectFactory("click")
+  dataObject.build(data)
   post(req.body).catch(console.dir);
   res.send();
 })

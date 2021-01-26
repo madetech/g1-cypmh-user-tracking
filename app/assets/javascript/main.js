@@ -42,4 +42,7 @@ document.onclick = function analytics_click(event) {
     console.log("sendBeacon: URL = ", url, "; data = ", data, "; status = ", status);
   }
 
+
+
 };
+
