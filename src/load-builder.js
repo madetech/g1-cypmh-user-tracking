@@ -1,3 +1,4 @@
+const session = require("express-session");
 
 const buildLoadEvent = (data) => LoadEventBuilder
     .newLoadEvent()
@@ -8,7 +9,7 @@ const buildLoadEvent = (data) => LoadEventBuilder
 
 
 class LoadEventBuilder {
-    static newLoadEvent = () => new LoadEventBuilder({type: 'load'});
+    static newLoadEvent = () => new LoadEventBuilder({eventType: 'load'});
 
     constructor(data) {
         this.data = data;
@@ -33,7 +34,7 @@ class LoadEventBuilder {
 
 class LoadEvent{
     constructor(data) {
-        this.type = data.type;
+        this.eventType = data.eventType;
         this.sessionId = data.sessionId;
         this.location = data.location;
         this.time = data.time;

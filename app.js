@@ -25,7 +25,7 @@ const routes = require('./app/routes');
 const documentationRoutes = require('./docs/documentation_routes');
 const utils = require('./lib/utils.js');
 
-const loadBuilder = require('./src/load-builder.js');
+const builderFactory = require('./src/builder-factory.js');
 
 // Set configuration variables
 const port = process.env.PORT || config.port;
@@ -187,8 +187,8 @@ async function writeToDatabase(trackingEvent) {
   try {
     mongoClient.then((client) => {
       const database = client.db('alpha-v1');
-      const collection = database.collection(trackingEvent.type);
-      collection.insertOne(JSON.parse(trackingEvent)).catch(error => {
+      const collection = database.collection(trackingEvent.eventType);
+      collection.insertOne(trackingEvent).catch(error => {
         console.log("insert error", error)
       });
     }).catch(err => {
@@ -203,11 +203,11 @@ async function writeToDatabase(trackingEvent) {
 };
 
 app.post('/tracking',(req, res)=>{
-  console.log(req.body);
-  const event = loadBuilder.buildLoadEvent(req.body);
+  // console.log("request.body: ",req.body);
+  const event = builderFactory.builderFactory(JSON.parse(req.body));
   // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
-  console.log(event);
-  //writeToDatabase(event).catch(console.dir);
+  console.log('Event: ', event);
+  writeToDatabase(event).catch(console.dir);
 
   res.send();
 })
