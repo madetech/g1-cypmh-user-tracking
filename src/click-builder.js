@@ -13,9 +13,19 @@ class ClickEventBuilder {
         this.data = data;
     }
     withSourceHref(sourceHref) {
-        
+        if(sourceHref === null || sourceHref === undefined) {
+            throw 'error'
+        }
         return new ClickEventBuilder({...this.data, sourceHref})
     }
+
+    build() {
+        return new ClickEvent(this.data.sessionId)
+    }
+}
+
+class ClickEvent{
+    constructor () {}
 }
 
 export {buildClickEvent, ClickEventBuilder};
