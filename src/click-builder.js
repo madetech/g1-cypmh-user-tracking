@@ -25,7 +25,9 @@ class ClickEventBuilder {
 }
 
 class ClickEvent{
-    constructor () {}
+    constructor (sessionId) {
+        this.sessionId;
+    }
 }
 
 export {buildClickEvent, ClickEventBuilder};
