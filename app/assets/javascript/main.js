@@ -21,6 +21,10 @@ const createOnScreenArray = (className) => {
 let isOnscreen = createOnScreenArray("track-me")
 
 // Global Functions
+const createEventData = (eventType, eventData = {}) => {
+  return {sessionId, eventType, location: location.href, eventData, time: Date()};
+}
+
 const sendToTracking = (data) => {
   if (!navigator.sendBeacon) return;
 
@@ -40,98 +44,41 @@ function isInViewport(element) {
 }
 
 // Event functions
-window.onunload = function (event) {
-  let data = {sessionId: sessionId, type: event.type, location: location.href, time: Date()};
+window.onunload = (event) => {
+  let data = createEventData(event.type)
   sendToTracking(data)
 }
 
-window.onload = function (event) {
-  let data = {sessionId: sessionId, type: event.type, location: location.href, time: Date()};
+window.onload = (event) => {
+  let data = createEventData(event.type)
   sendToTracking(data)
 
-
   isOnscreen.forEach(item => {
-    let result = item.onscreen
-    let visibility;
-    if (result === true) {
-        visibility = "on screen";
-    } else {
-        visibility = "off screen";
-    }
-    if (!navigator.sendBeacon) return;
-    let url = "/tracking";
-    // Create the data to send
-    let sessionId = document.cookie.split("=")[1];
-    // Send the beacon
-    let visibilityData = {visibility: visibility, objectInnerText: item.element.innerText}
-    let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: "scroll", location: location.href, eventData:visibilityData,  time: Date()}));
+    let visible = item.onscreen
+    let visibilityData = {visible, objectInnerText: item.element.innerText}
+    let data = createEventData("scroll", visibilityData)
+    sendToTracking(data)
   });
 };
 
-
-
-
-
-
-window.onscroll = function scroll_two(event) {
+window.onscroll = (event) => {
     isOnscreen.forEach(item => {
-        let result = isInViewport(item.element)
-        let visibility;
-        if (item.onscreen !== result) {
-            
-            if (result === true) {
-                visibility = "on screen";
-            } else {
-                visibility = "off screen";
-            }
-            if (!navigator.sendBeacon) return;
-            let url = "/tracking";
-            // Create the data to send
-            let sessionId = document.cookie.split("=")[1];
-            // Send the beacon
-            let visibilityData = {visibility: visibility, objectInnerText: item.element.innerText}
-            let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: event.type, location: location.href, eventData:visibilityData,  time: Date()}));
-            item.onscreen = result;
+        let visible = isInViewport(item.element)
+        if (item.onscreen !== visible) {
+            let visibilityData = {visible, objectInnerText: item.element.innerText}
+            let data = createEventData(event.type, visibilityData)
+            sendToTracking(data)
+            item.onscreen = visible;
         }
     });
 }
 
-// window.onload = function scroll_three(event) {
-    // isOnscreen.forEach(item => {
-    //     let result = item.onscreen
-    //     let visibility;
-    //     if (result === true) {
-    //         visibility = "on screen";
-    //     } else {
-    //         visibility = "off screen";
-    //     }
-    //     if (!navigator.sendBeacon) return;
-    //     let url = "/tracking";
-    //     // Create the data to send
-    //     let sessionId = document.cookie.split("=")[1];
-    //     // Send the beacon
-    //     let visibilityData = {visibility: visibility, objectInnerText: item.element.innerText}
-    //     let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: "scroll", location: location.href, eventData:visibilityData,  time: Date()}));
-    // });
-// }
-
-document.onclick = function analytics_click(event) {
-    if (!navigator.sendBeacon) return;
-    let clickObject = event.path[0]
+document.onclick = (event) => {
+    let clickObject = event.path[0];
 
     if (clickObject.href !== undefined) {
-        console.log(event);
-        console.log(event.path[0].href);
-        let url = "/tracking";
-        // Create the data to send
-        let clickData = {linkTo: clickObject.href, linkText: clickObject.innerText}
-        let sessionId = document.cookie.split("=")[1]
-        let beaconData = {sessionId:sessionId, type: event.type, location: location.href, eventData:clickData, time: Date()}
-        // Send the beacon
-        let status = navigator.sendBeacon(url, JSON.stringify(beaconData));
+        let clickData = {linkTo: clickObject.href, linkText: clickObject.innerText};
+        let data = createEventData(event.type, clickData)
+        sendToTracking(data);
     }
-};
-
-
-
-
+}
