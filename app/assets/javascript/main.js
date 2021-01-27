@@ -19,13 +19,13 @@ window.onload = window.onunload = function analytics(event) {
 // };
 
 function isInViewport(element) {
-  const rect = element.getBoundingClientRect();
-  return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
 }
 
 var elements = document.getElementsByClassName("track-me");
@@ -38,45 +38,54 @@ var elements = document.getElementsByClassName("track-me");
 // };
 
 let isOnscreen = []
-for (var i = 0; i < elements.length; i++) {
-  console.log(elements)
-  isOnscreen = [...isOnscreen, {onscreen: isInViewport(elements[i]), element: elements[i]}]
-};
+// for (var i = 0; i < elements.length; i++) {
+//   console.log(elements)
+//   isOnscreen = [...isOnscreen, {onscreen: isInViewport(elements[i]), element: elements[i]}]
+// };
 Array.from(elements).forEach(function(item) {
-  console.log("/////////////////////////////")
-  console.log(item.innerHTML);
+    isOnscreen = [...isOnscreen, {onscreen: isInViewport(item), element: item}]
 });
 // isOnscreen = elements.map(element_obj => ({onscreen: false, element: element_obj}))//[{id:1, onscreen:false, element:element}]
 window.onscroll = function scroll_two(event) {
-  isOnscreen.forEach(item => {
-    let result = isInViewport(item.element)
-    if (item.onscreen !== result) {
-      // console.log(item.element);
-      if (result == true) {
-        if (!navigator.sendBeacon) return;
-        console.log("on screen")
-      } else {
-        console.log("off screen")
-      }
-      let url = "/tracking";
-      // Create the data to send
-      let sessionId = document.cookie.split("=")[1]
-      // Send the beacon
-      let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: event.type, location: location.href, time: Date()}));
-      item.onscreen = result
-    }
-  });
+    isOnscreen.forEach(item => {
+        let result = isInViewport(item.element)
+        let visibility;
+        if (item.onscreen !== result) {
+            // console.log(item.element);
+            if (result === true) {
+                visibility = "on screen";
+            } else {
+                visibility = "off screen";
+            }
+            if (!navigator.sendBeacon) return;
+            let url = "/tracking";
+            // Create the data to send
+            let sessionId = document.cookie.split("=")[1];
+            // Send the beacon
+            let visibilityData = {visibility: visibility, objectInnerText: item.element.innerText}
+            let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: event.type, location: location.href, eventData:visibilityData,  time: Date()}));
+            item.onscreen = result;
+        }
+    });
 }
 
 window.onload = function scroll_three(event) {
-  isOnscreen.forEach(item => {
-    let result = item.onscreen
-      if (result == true) {
-        console.log("on screen")
-      } else {
-        console.log("off screen")
-      }
-  });
+    isOnscreen.forEach(item => {
+        let result = item.onscreen
+        let visibility;
+        if (result === true) {
+            visibility = "on screen";
+        } else {
+            visibility = "off screen";
+        }
+        if (!navigator.sendBeacon) return;
+        let url = "/tracking";
+        // Create the data to send
+        let sessionId = document.cookie.split("=")[1];
+        // Send the beacon
+        let visibilityData = {visibility: visibility, objectInnerText: item.element.innerText}
+        let status = navigator.sendBeacon(url, JSON.stringify({sessionId: sessionId, type: "scroll", location: location.href, eventData:visibilityData,  time: Date()}));
+    });
 }
 
 document.onclick = function analytics_click(event) {
