@@ -30,4 +30,4 @@ class ClickEvent{
     }
 }
 
-export {buildClickEvent, ClickEventBuilder};
+export {buildClickEvent, ClickEventBuilder, ClickEvent};
