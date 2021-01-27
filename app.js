@@ -203,7 +203,7 @@ async function writeToDatabase(trackingEvent) {
 };
 
 app.post('/tracking',(req, res)=>{
-  // console.log("request.body: ",req.body);
+  console.log("request.body: ",req.body);
   const event = builderFactory.builderFactory(JSON.parse(req.body));
   // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
   console.log('Event: ', event);

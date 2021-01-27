@@ -1,4 +1,4 @@
-const session = require("express-session");
+
 
 const buildLoadEvent = (data) => LoadEventBuilder
     .newLoadEvent()

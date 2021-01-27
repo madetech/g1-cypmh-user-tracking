@@ -1,56 +1,54 @@
-// serverside
 const buildClickEvent = (data) => ClickEventBuilder
     .newClickEvent()
-    .withTrackingSession(data.trackingSession)
-    .withSourceHref(data.sourceHref)
-    .withDestinationHref(data.destinationHref)
-    .withElementId(data.elementId)
-    .withLinkText(data.linkText)
-    .build()
-
-// let builder = ClickEventBuilder
-// .withTrackingSession(data.trackingSession);
-//
-// let event = builder.build();
-//
-// let b2 = builder.withSourceHref('foo');
-// let b3 = builder.withSourceHref('bar');
+    .withSessionId(data.sessionId)
+    .withSourceHref(data.location)
+    .withTargetHref(data.eventData.linkTo)
+    .withLinkText(data.eventData.linkText)
+    .withTimeStamp(data.time)
+    .build();
 
 
-// client side
 class ClickEventBuilder {
-    
-    static newClickEvent = () => new ClickEventBuilder({type: 'click'})
+    static newClickEvent = () => new ClickEventBuilder({eventType: 'click'});
+
     constructor(data) {
         this.data = data;
     }
-    withTrackingSession(sessionId) {
-        //verify is not null etc
-        // verify is valid uuid
-        // etc
-        return new ClickEventBuilder({sessionId})
-    }
-    withSourceHref(sourceHref) {
-        if(sourceHref === null || sourceHref === undefined) {
-            throw 'error'
-        }
-        // check is valid URL
-        return new ClickEventBuilder({...this.data, sourceHref})
+
+    withSessionId(sessionId){
+        return new ClickEventBuilder({...this.data, sessionId});
     }
 
-    build() {
-        //assert all members of data exist
-        if(this.data.sessionId === undefined) {
-            throw 'error'
-        }
-        return new ClickEvent(this.data)
+    withSourceHref(location){
+        return new ClickEventBuilder({...this.data, location});
+    }
+
+    withTargetHref(targetHref){
+        return new ClickEventBuilder({...this.data, targetHref});
+    }
+
+    withLinkText(linkText){
+        return new ClickEventBuilder({...this.data, linkText});
+    }
+
+    withTimeStamp(time){
+        return new ClickEventBuilder({...this.data, time});
+    }
+
+    build(){
+        return new ClickEvent(this.data);
     }
 }
 
 class ClickEvent{
-    constructor (data) {
+    constructor(data) {
+        this.eventType = data.eventType;
         this.sessionId = data.sessionId;
+        this.location = data.location;
+        this.targetHref = data.targetHref;
+        this.linkText = data.linkText;
+        this.time = data.time;
     }
 }
 
-export {buildClickEvent, ClickEventBuilder, ClickEvent};
+module.exports = {buildClickEvent, ClickEventBuilder, ClickEvent};
