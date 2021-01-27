@@ -23,7 +23,9 @@ const config = require('./app/config');
 const locals = require('./app/locals');
 const routes = require('./app/routes');
 const documentationRoutes = require('./docs/documentation_routes');
-const utils = require('./lib/utils.js')
+const utils = require('./lib/utils.js');
+
+const loadBuilder = require('./src/load-builder.js');
 
 // Set configuration variables
 const port = process.env.PORT || config.port;
@@ -202,8 +204,11 @@ async function writeToDatabase(trackingEvent) {
 
 app.post('/tracking',(req, res)=>{
   console.log(req.body);
-  const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
-  writeToDatabase(trackingEvent).catch(console.dir);
+  const event = loadBuilder.buildLoadEvent(req.body);
+  // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
+  console.log(event);
+  //writeToDatabase(event).catch(console.dir);
+
   res.send();
 })
 

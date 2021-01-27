@@ -8,16 +8,16 @@ const buildClickEvent = (data) => ClickEventBuilder
     .withLinkText(data.linkText)
     .build()
 
-let builder = ClickEventBuilder
-.withTrackingSession(data.trackingSession);
+// let builder = ClickEventBuilder
+// .withTrackingSession(data.trackingSession);
+//
+// let event = builder.build();
+//
+// let b2 = builder.withSourceHref('foo');
+// let b3 = builder.withSourceHref('bar');
 
-let event = builder.build();
 
-let b2 = builder.withSourceHref('foo');
-let b3 = builder.withSourceHref('bar');
-
-
-    // client side
+// client side
 class ClickEventBuilder {
     
     static newClickEvent = () => new ClickEventBuilder({type: 'click'})
@@ -43,13 +43,13 @@ class ClickEventBuilder {
         if(this.data.sessionId === undefined) {
             throw 'error'
         }
-        return new ClickEvent(this.data.sessionId)
+        return new ClickEvent(this.data)
     }
 }
 
 class ClickEvent{
-    constructor (sessionId) {
-        this.sessionId;
+    constructor (data) {
+        this.sessionId = data.sessionId;
     }
 }
 
