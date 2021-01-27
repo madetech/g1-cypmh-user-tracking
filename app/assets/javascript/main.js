@@ -6,6 +6,7 @@ if(!document.cookie){
 }
 // Define global variables 
 const sessionId = document.cookie.split("=")[1]
+let trackMeOnScreen = createOnScreenArray("track-me")
 
 
 const createOnScreenArray = (className) => {
@@ -17,8 +18,6 @@ const createOnScreenArray = (className) => {
   });
   return isOnscreen
 }
-
-let isOnscreen = createOnScreenArray("track-me")
 
 // Global Functions
 const createEventData = (eventType, eventData = {}) => {
@@ -53,7 +52,7 @@ window.onload = (event) => {
   let data = createEventData(event.type)
   sendToTracking(data)
 
-  isOnscreen.forEach(item => {
+  trackMeOnScreen.forEach(item => {
     let visible = item.onscreen
     let visibilityData = {visible, objectInnerText: item.element.innerText}
     let data = createEventData("scroll", visibilityData)
@@ -62,7 +61,7 @@ window.onload = (event) => {
 };
 
 window.onscroll = (event) => {
-    isOnscreen.forEach(item => {
+  trackMeOnScreen.forEach(item => {
         let visible = isInViewport(item.element)
         if (item.onscreen !== visible) {
             let visibilityData = {visible, objectInnerText: item.element.innerText}
@@ -74,10 +73,10 @@ window.onscroll = (event) => {
 }
 
 document.onclick = (event) => {
-    let clickObject = event.path[0];
+    let clickedObject = event.path[0];
 
-    if (clickObject.href !== undefined) {
-        let clickData = {linkTo: clickObject.href, linkText: clickObject.innerText};
+    if (clickedObject.href !== undefined) {
+        let clickData = {linkTo: clickedObject.href, linkText: clickedObject.innerText};
         let data = createEventData(event.type, clickData)
         sendToTracking(data);
     }
