@@ -41,14 +41,15 @@ class ClickEventBuilder {
 }
 
 class ClickEvent{
-    constructor(data) {
-        this.eventType = data.eventType;
-        this.sessionId = data.sessionId;
-        this.location = data.location;
-        this.targetHref = data.targetHref;
-        this.linkText = data.linkText;
-        this.time = data.time;
+    constructor(eventType, sessionId, location, targetHref, linkText, time) {
+        this.eventType = eventType;
+        this.sessionId = sessionId;
+        this.location = location;
+        this.targetHref = targetHref;
+        this.linkText = linkText;
+        this.time = time;
     }
 }
 
 module.exports = {buildClickEvent, ClickEventBuilder, ClickEvent};
+
