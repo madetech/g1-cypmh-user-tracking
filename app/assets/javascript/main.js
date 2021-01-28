@@ -1,4 +1,8 @@
 // ES6 or Vanilla JavaScript
+// const loadBuilder = require('./load-builder.js');
+// import unloadBuilder from "../../../src/unload-builder.js";
+// const clickBuilder = require('./click-builder.js');
+// const scrollBuilder = require('./scroll-builder.js');
 
 // Define page props
 if(!document.cookie){
@@ -25,6 +29,7 @@ const createEventData = (eventType, eventData = {}) => {
 }
 
 const sendToTracking = (data) => {
+    //console.log("************* getting to send to tracking");
     if (!navigator.sendBeacon) return;
 
     let url = "/tracking";
@@ -44,13 +49,15 @@ function isInViewport(element) {
 
 // Event functions
 window.onunload = (event) => {
-    let data = createEventData(event.type)
-    sendToTracking(data)
+    let data = createEventData(event.type);
+    //let unloadEvent = unloadBuilder.buildUnloadEvent(data);
+    //sendToTracking(unloadEvent);
+    sendToTracking(data);
 }
 
 window.onload = (event) => {
-    let data = createEventData(event.type)
-    sendToTracking(data)
+    let data = createEventData(event.type);
+    sendToTracking(data);
 
     trackMeOnScreen.forEach(item => {
         let visible = item.onscreen
