@@ -221,7 +221,7 @@ app.get(/^([^.]+)$/, function (req, res, next) {
 })
 
 // Check if the app is using documentation
-if (useDocumentation || onlyDocumentation == 'true') {
+if (useDocumentation || onlyDocumentation === 'true') {
   // Documentation routes
   app.use('/docs', documentationApp);
 

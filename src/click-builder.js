@@ -1,10 +1,10 @@
+const baseBuilder = require("./base-builder");
+
 const buildClickEvent = (data) => ClickEventBuilder
     .newClickEvent()
-    .withSessionId(data.sessionId)
-    .withSourceHref(data.location)
+    .withBaseEvent(data, baseBuilder.buildBaseEvent)
     .withTargetHref(data.eventData.linkTo)
     .withLinkText(data.eventData.linkText)
-    .withTimeStamp(data.time)
     .build();
 
 
@@ -15,12 +15,9 @@ class ClickEventBuilder {
         this.data = data;
     }
 
-    withSessionId(sessionId){
-        return new ClickEventBuilder({...this.data, sessionId});
-    }
-
-    withSourceHref(location){
-        return new ClickEventBuilder({...this.data, location});
+    withBaseEvent(data, baseBuilder){
+        const baseEvent = baseBuilder(data);
+        return new ClickEventBuilder({...this.data, ...baseEvent});
     }
 
     withTargetHref(targetHref){
@@ -31,10 +28,6 @@ class ClickEventBuilder {
         return new ClickEventBuilder({...this.data, linkText});
     }
 
-    withTimeStamp(time){
-        return new ClickEventBuilder({...this.data, time});
-    }
-
     build(){
         return new ClickEvent(
             this.data.eventType, 
@@ -43,7 +36,7 @@ class ClickEventBuilder {
             this.data.targetHref, 
             this.data.linkText, 
             this.data.time
-            );
+        );
     }
 }
 

@@ -1,9 +1,8 @@
+const baseBuilder = require("./base-builder");
 
 const buildUnloadEvent = (data) => UnloadEventBuilder
     .newUnloadEvent()
-    .withSessionId(data.sessionId)
-    .withSourceHref(data.location)
-    .withTimeStamp(data.time)
+    .withBaseEvent(data, baseBuilder.buildBaseEvent)
     .build();
 
 
@@ -14,16 +13,9 @@ class UnloadEventBuilder {
         this.data = data;
     }
 
-    withSessionId(sessionId){
-        return new UnloadEventBuilder({...this.data, sessionId});
-    }
-
-    withSourceHref(location){
-        return new UnloadEventBuilder({...this.data, location});
-    }
-
-    withTimeStamp(time){
-        return new UnloadEventBuilder({...this.data, time});
+    withBaseEvent(data, baseBuilder){
+        const baseEvent = baseBuilder(data);
+        return new UnloadEventBuilder({...this.data, ...baseEvent});
     }
 
     build(){
@@ -32,7 +24,7 @@ class UnloadEventBuilder {
             this.data.sessionId, 
             this.data.location, 
             this.data.time
-            );
+        );
     }
 }
 

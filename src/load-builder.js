@@ -1,30 +1,22 @@
-
+const baseBuilder = require("./base-builder");
 
 const buildLoadEvent = (data) => LoadEventBuilder
     .newLoadEvent()
-    .withSessionId(data.sessionId)
-    .withSourceHref(data.location)
-    .withTimeStamp(data.time)
+    .withBaseEvent(data, baseBuilder.buildBaseEvent)
     .build();
 
 
 class LoadEventBuilder {
+
     static newLoadEvent = () => new LoadEventBuilder({eventType: 'load'});
 
     constructor(data) {
         this.data = data;
     }
 
-    withSessionId(sessionId){
-        return new LoadEventBuilder({...this.data, sessionId});
-    }
-
-    withSourceHref(location){
-        return new LoadEventBuilder({...this.data, location});
-    }
-
-    withTimeStamp(time){
-        return new LoadEventBuilder({...this.data, time});
+    withBaseEvent(data, baseBuilder){
+        const baseEvent = baseBuilder(data);
+        return new LoadEventBuilder({...this.data, ...baseEvent});
     }
 
     build(){
@@ -33,7 +25,7 @@ class LoadEventBuilder {
             this.data.sessionId, 
             this.data.location, 
             this.data.time
-            );
+        );
     }
 }
 
