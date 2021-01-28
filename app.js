@@ -204,10 +204,17 @@ async function writeToDatabase(trackingEvent) {
 
 app.post('/tracking',(req, res)=>{
   console.log("request.body: ",req.body);
-  const event = eventBuilder.eventBuilder(JSON.parse(req.body));
-  // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
-  console.log('Event: ', event);
-  writeToDatabase(event).catch(console.dir);
+  try {
+    const event = eventBuilder.eventBuilder(JSON.parse(req.body));
+    console.log('Event: ', event);
+    writeToDatabase(event).catch(console.dir);
+  } catch(err) {
+    console.log(err.message)
+  }
+  // const event = eventBuilder.eventBuilder(JSON.parse(req.body));
+  // // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
+  // console.log('Event: ', event);
+  // writeToDatabase(event).catch(console.dir);
 
   res.send();
 })

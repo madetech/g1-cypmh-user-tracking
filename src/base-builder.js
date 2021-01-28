@@ -15,15 +15,27 @@ class BaseEventBuilder {
     }
 
     withSessionId(sessionId){
-        return new BaseEventBuilder({...this.data, sessionId});
+        if (sessionId.match(/^\d{6}$/)) {
+            return new BaseEventBuilder({...this.data, sessionId});
+        } else {
+            throw new Error("invalid session Id")
+        }
     }
 
     withSourceHref(location){
-        return new BaseEventBuilder({...this.data, location});
+        if (location.match(/^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/i)){
+            return new BaseEventBuilder({...this.data, location});
+        } else {
+            throw new Error("invalid source URL")
+        }
     }
 
     withTimeStamp(time){
-        return new BaseEventBuilder({...this.data, time});
+        if ((new Date(time)).getTime() > 0){
+            return new BaseEventBuilder({...this.data, time});
+        } else {
+            throw new Error('invalid timestamp')
+        }        
     }
 
     build(){
