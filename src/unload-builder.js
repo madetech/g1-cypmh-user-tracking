@@ -27,16 +27,21 @@ class UnloadEventBuilder {
     }
 
     build(){
-        return new UnloadEvent(this.data);
+        return new UnloadEvent(
+            this.data.eventType, 
+            this.data.sessionId, 
+            this.data.location, 
+            this.data.time
+            );
     }
 }
 
 class UnloadEvent{
-    constructor(data) {
-        this.eventType = data.eventType;
-        this.sessionId = data.sessionId;
-        this.location = data.location;
-        this.time = data.time;
+    constructor(eventType, sessionId, location, time) {
+        this.eventType = eventType;
+        this.sessionId = sessionId;
+        this.location = location;
+        this.time = time;
     }
 }
 

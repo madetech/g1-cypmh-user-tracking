@@ -28,16 +28,21 @@ class LoadEventBuilder {
     }
 
     build(){
-        return new LoadEvent(this.data);
+        return new LoadEvent(
+            this.data.eventType, 
+            this.data.sessionId, 
+            this.data.location, 
+            this.data.time
+            );
     }
 }
 
 class LoadEvent{
-    constructor(data) {
-        this.eventType = data.eventType;
-        this.sessionId = data.sessionId;
-        this.location = data.location;
-        this.time = data.time;
+    constructor(eventType, sessionId, location, time) {
+        this.eventType = eventType;
+        this.sessionId = sessionId;
+        this.location = location;
+        this.time = time;
     }
 }
 

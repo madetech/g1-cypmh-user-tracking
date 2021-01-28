@@ -37,19 +37,26 @@ withTimeStamp(time){
 }
 
 build(){
-    return new ScrollEvent(this.data);
-}
+    return new ScrollEvent(
+        this.data.eventType, 
+        this.data.sessionId, 
+        this.data.location, 
+        this.data.visible, 
+        this.data.objectInnerText, 
+        this.data.time
+        );
+    }
 }
 
 class ScrollEvent{
-constructor(data) {
-    this.eventType = data.eventType;
-    this.sessionId = data.sessionId;
-    this.location = data.location;
-    this.visible = data.visible;
-    this.objectInnerText = data.objectInnerText;
-    this.time = data.time;
-}
+    constructor(eventType, sessionId, location, visible, objectInnerText, time) {
+        this.eventType = eventType;
+        this.sessionId = sessionId;
+        this.location = location;
+        this.visible = visible;
+        this.objectInnerText = objectInnerText;
+        this.time = time;
+    }
 }
 
 module.exports = {buildScrollEvent, ScrollEventBuilder, ScrollEvent};

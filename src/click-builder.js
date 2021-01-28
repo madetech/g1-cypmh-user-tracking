@@ -36,7 +36,14 @@ class ClickEventBuilder {
     }
 
     build(){
-        return new ClickEvent(this.data);
+        return new ClickEvent(
+            this.data.eventType, 
+            this.data.sessionId, 
+            this.data.location, 
+            this.data.targetHref, 
+            this.data.linkText, 
+            this.data.time
+            );
     }
 }
 

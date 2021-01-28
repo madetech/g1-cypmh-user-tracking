@@ -25,7 +25,7 @@ const routes = require('./app/routes');
 const documentationRoutes = require('./docs/documentation_routes');
 const utils = require('./lib/utils.js');
 
-const builderFactory = require('./src/builder-factory.js');
+const eventBuilder = require('./src/event-builder.js');
 
 // Set configuration variables
 const port = process.env.PORT || config.port;
@@ -204,7 +204,7 @@ async function writeToDatabase(trackingEvent) {
 
 app.post('/tracking',(req, res)=>{
   console.log("request.body: ",req.body);
-  const event = builderFactory.builderFactory(JSON.parse(req.body));
+  const event = eventBuilder.eventBuilder(JSON.parse(req.body));
   // const trackingEvent = buildTrackingEvent(JSON.parse(req.body));
   console.log('Event: ', event);
   writeToDatabase(event).catch(console.dir);

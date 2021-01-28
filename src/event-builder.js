@@ -4,7 +4,7 @@ const clickBuilder = require('./click-builder.js');
 const scrollBuilder = require('./scroll-builder.js');
 
 
-function builderFactory(reqBody) {
+function eventBuilder(reqBody) {
   switch (reqBody.eventType){
     case "load":
       return (loadBuilder.buildLoadEvent(reqBody));
@@ -19,4 +19,4 @@ function builderFactory(reqBody) {
   }
 }
 
-module.exports = {builderFactory}
+module.exports = {eventBuilder}
